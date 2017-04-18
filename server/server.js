@@ -88,6 +88,7 @@ let AuthUsers = require('./autUsers');
 let authUsers = new AuthUsers();
 
 server.listen(3000);
+
 io.on('connection', function (socket) {
     console.log('connection');
 
@@ -104,6 +105,10 @@ io.on('connection', function (socket) {
                 return;
             }
 
+            if (!('passport' in session && 'user' in session.passport)) {
+                socket.emit('auth error');
+                return;
+            }
             let user = session.passport.user;
 
             if (!authUsers.userExists(user)) {
